@@ -35,6 +35,7 @@ import ScheduleData from "../../../libs/types/Schedule"
 import { getCompany } from "../../../libs/ApiClient/CompanyApi"
 import { getSchedule, saveSchedule, deleteSchedule, updateSchedule } from "../../../libs/ApiClient/ScheduleApi"
 import Company from "../../../libs/types/Company"
+import { width } from "@fortawesome/free-brands-svg-icons/fa42Group"
 
 
 export default function SchedulerPage() {
@@ -58,6 +59,7 @@ export default function SchedulerPage() {
     const showEditModal = (schedule: ScheduleData) => {
         setEditingSchedule(schedule)
         form.setFieldsValue({
+            name: schedule.name,
             time: dayjs(schedule.time, "HH:mm"),
             startDate: dayjs(schedule.startDate),
             keywords: schedule.keywords,
@@ -79,6 +81,7 @@ export default function SchedulerPage() {
         try {
             const scheduleData = {
                 time: values.time.format("HH:mm"),
+                name: values.name,
                 startDate: values.startDate.format("YYYY-MM-DD"),
                 keywords: values.keywords,
                 accountId: values.accountId,
@@ -93,7 +96,7 @@ export default function SchedulerPage() {
                         schedule._id === editingSchedule._id ? { ...schedule, ...scheduleData } : schedule,
                     ),
                 )
-                await saveSchedule({"_id":editingSchedule._id, ...scheduleData})
+                await saveSchedule({ "_id": editingSchedule._id, ...scheduleData })
                 message.success("Cập nhật lịch trình thành công!")
             } else {
                 // Thêm schedule mới
@@ -101,7 +104,7 @@ export default function SchedulerPage() {
                     _id: '',
                     ...scheduleData,
                 }
-                await saveSchedule({...newSchedule})
+                await saveSchedule({ ...newSchedule })
                 await initSheduler();
                 message.success("Thêm lịch trình thành công!")
             }
@@ -143,6 +146,18 @@ export default function SchedulerPage() {
             key: "index",
             width: 60,
             render: (_: any, __: any, index: number) => index + 1,
+        },
+        {
+            title: "Tên thông báo",
+            key: "name",
+            dataIndex:"name",
+            render: (name: string) => {
+                return <div className="">
+                    <p className="text-nowrap text-sm text-gray-700 truncate" title={name}>
+                        {name}
+                    </p>
+                </div>
+            }
         },
         {
             title: "Giờ chạy",
@@ -389,6 +404,17 @@ export default function SchedulerPage() {
                     width={600}
                 >
                     <Form form={form} layout="vertical" onFinish={handleSubmit} className="mt-4">
+                        <Form.Item
+                            label="Tên thông báo (hiển thị trong tin nhắn thông báo zalo)"
+                            name="name"
+                            rules={[{ required: true, message: "Vui lòng nhập tên thông báo" }]}
+                        >
+                            <Input
+                                placeholder="Ví dụ: KD1, KD2, ..."
+                                maxLength={500}
+                            />
+                        </Form.Item>
+
                         <div className="grid grid-cols-2 gap-4">
                             <Form.Item
                                 label="Giờ chạy thông báo"

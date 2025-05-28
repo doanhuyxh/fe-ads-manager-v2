@@ -3,6 +3,7 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface ISchedule extends Document {
   _id: string;
+  name:string;
   time: string; // HH:mm format
   startDate: string; // YYYY-MM-DD format
   keywords: string;
@@ -12,6 +13,11 @@ export interface ISchedule extends Document {
 }
 
 const ScheduleSchema: Schema<ISchedule> = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    trim: true,
+  },
   time: {
     type: String,
     required: true,
