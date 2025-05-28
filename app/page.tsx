@@ -1,103 +1,156 @@
-import Image from "next/image";
+"use client"
+
+import { useState, useEffect } from "react"
+import { Form, Input, Button, Checkbox, Typography, message, Spin } from "antd"
+import { UserOutlined, LockOutlined, EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons"
+const { Title, Text } = Typography
+import { useRouter } from "next/navigation";
+import { login } from "../libs/ApiClient/AuthApi"
+import '../styles/login.css'
+
+interface LoginFormValues {
+  username: string
+  password: string
+  remember: boolean
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [loading, setLoading] = useState(false)
+  const [form] = Form.useForm()
+  const router = useRouter();
+  const [messageApi, contextHolder] = message.useMessage();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+  const onFinish = async (values: LoginFormValues) => {
+    setLoading(true)
+
+    try {
+      const dataLoginResponse = await login({ email: values.username, password: values.password })
+
+      if (dataLoginResponse.status) {
+        messageApi.success("Đăng nhập thành công!")
+        router.push("/dashboard");
+      } else {
+        messageApi.error("Tài khoản hoặc mật khẩu không đúng")
+      }
+
+    } catch (error) {
+      messageApi.error("Đăng nhập thất bại. Vui lòng thử lại!")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const onFinishFailed = (errorInfo: any) => {
+    console.log("Failed:", errorInfo)
+    messageApi.error("Vui lòng kiểm tra lại thông tin!")
+  }
+
+  useEffect(() => {
+    fetch("/api/company/current")
+      .then(res => res.json())
+      .then(res=>{
+        window.location.href="/report"
+      })
+
+  },[])
+
+  return (
+    <div className="login-container">
+      {contextHolder}
+      {/* Background with gradient and animated shapes */}
+      <div className="login-background">
+        <div className="shape shape-1"></div>
+        <div className="shape shape-2"></div>
+        <div className="shape shape-3"></div>
+      </div>
+
+      {/* Login Form */}
+      <div className="login-form-container">
+        <div className="login-form-wrapper">
+          {/* Logo/Brand */}
+          <div className="login-header">
+            <div className="logo">
+              <UserOutlined className="logo-icon" />
+            </div>
+            <Title level={2} className="login-title">
+              Đăng nhập hệ thống
+            </Title>
+            <Text className="login-subtitle">Vui lòng nhập thông tin đăng nhập</Text>
+          </div>
+
+          {/* Demo Account Info */}
+          <div className="demo-info">
+            <Text className="demo-text">
+              <strong>Tài khoản demo:</strong> admin / 123456
+            </Text>
+          </div>
+
+          {/* Form */}
+          <Form
+            form={form}
+            name="login"
+            className="login-form"
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+            size="large"
+            layout="vertical"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <Form.Item
+              name="username"
+              label="Tài khoản"
+              rules={[
+                { required: true, message: "Vui lòng nhập tài khoản!" },
+                { min: 3, message: "Tài khoản phải có ít nhất 3 ký tự!" },
+              ]}
+            >
+              <Input
+                prefix={<UserOutlined className="input-icon" />}
+                placeholder="Nhập tài khoản của bạn"
+                className="login-input"
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="password"
+              label="Mật khẩu"
+              rules={[
+                { required: true, message: "Vui lòng nhập mật khẩu!" },
+                { min: 6, message: "Mật khẩu phải có ít nhất 6 ký tự!" },
+              ]}
+            >
+              <Input.Password
+                prefix={<LockOutlined className="input-icon" />}
+                placeholder="Nhập mật khẩu"
+                className="login-input"
+                iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+              />
+            </Form.Item>
+
+            <Form.Item className="login-options">
+              <div className="options-wrapper">
+                <Form.Item name="remember" valuePropName="checked" noStyle>
+                  <Checkbox className="remember-checkbox">Ghi nhớ đăng nhập</Checkbox>
+                </Form.Item>
+              </div>
+            </Form.Item>
+
+            <Form.Item>
+              <Button type="primary" htmlType="submit" className="login-button" loading={loading} block>
+                {loading ? (
+                  <span>
+                    <Spin size="small" className="login-spinner" />
+                    Đang đăng nhập...
+                  </span>
+                ) : (
+                  "Đăng nhập"
+                )}
+              </Button>
+            </Form.Item>
+          </Form>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
     </div>
-  );
+  )
 }

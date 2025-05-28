@@ -1,0 +1,89 @@
+@import "tailwindcss";
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.ql-editor {
+  min-height: 300px;
+}
+
+.ant-table-thead>tr>th {
+  background-color: #0b60df !important;
+  font-weight: 600 !important;
+  color: aliceblue !important;
+}
+
+.ant-table-thead>tr>th.is-resizing {
+  background-color: #f0f0f0 !important; /* Màu xám khi resize */
+  color: black !important;
+}
+
+.ant-card-head {
+  background-color: #0b60df !important;
+  border-radius: 12px !important;
+  margin-bottom: 4px !important;
+}
+
+.ant-card-body {
+  padding: 0 !important;
+}
+
+.recharts-label {
+  padding: 10px !important;
+}
+
+.recharts-legend-wrapper {
+  display: none !important;
+}
+
+.collapse_antd {
+  background-color: #0b60df !important;
+  color: aliceblue !important;
+  font-weight: 600;
+}
+
+.ant-table-summary {
+  position: sticky;
+  bottom: 0;
+  background: white;
+  z-index: 2;
+}
+
+.ant-table-column-title {
+  cursor: default;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  max-height: 100%;
+  overflow-y: hidden;
+
+}
+.apexcharts-tooltip {
+  color: #000 !important;
+}
