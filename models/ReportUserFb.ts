@@ -4,8 +4,7 @@ import mongoose, { Schema, Document, Model, Types } from "mongoose";
 export interface IReportUserFb extends Document {
   name: string;
   keyword: string;
-  companyId: string | Types.ObjectId;
-  colums: string[];
+  column: string[];
 }
 
 const ReportUserFbSchema: Schema<IReportUserFb> = new mongoose.Schema({
@@ -19,12 +18,7 @@ const ReportUserFbSchema: Schema<IReportUserFb> = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  companyId: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: "Company",
-  },
-  colums: {
+  column: {
     type: [String],
     required: true,
     default: [],

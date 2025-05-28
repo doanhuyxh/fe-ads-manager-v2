@@ -1,7 +1,7 @@
 import { fetcher } from "../fetch";
 
 // get_ads_notify_facebook, save_notification_ads_fb
-export async function get_all_fb_fetch_campaign_data_v20(until: string, since: string) {
+export async function get_all_fb_fetch_campaign_data_v20(since: string,until: string) {
   try {
     const response = await fetcher<any>(`/api/external/get_all_fb_fetch_campaign_data_v20?until=${until}&since=${since}`);
     return response;

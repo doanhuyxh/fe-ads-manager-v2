@@ -36,7 +36,7 @@ export async function get_report_fb(): Promise<ApiResponse<ReportUserFb[]>> {
 export async function delete_report_fb(id:string) {
     try {
         const response = await fetcher<ApiResponse<ReportUserFb[]>>(`/api/report-user-fb/${id}`, {
-            method: "GET",
+            method: "DELETE",
         });
         return response;
     } catch (error: any) {

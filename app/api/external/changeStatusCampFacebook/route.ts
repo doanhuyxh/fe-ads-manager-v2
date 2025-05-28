@@ -7,8 +7,11 @@ export async function GET(req: NextRequest) {
     const campaign_id = searchParams.get("campaign_id") || "";
     const status = searchParams.get("status") || "";
     // 👇 Lấy cookie từ request gửi từ trình duyệt
-    //const id_account_fb_mongo = req.cookies.get("id_account_fb_mongo")?.value || "";
-    const id_account_fb_mongo = "683571cd53d57a325d240074";
+    const cookieHeader = req.headers.get("cookie") || "";
+    const cookiesObject = Object.fromEntries(
+        cookieHeader.split(";").map((c) => c.trim().split("="))
+    );
+    const id_account_fb_mongo = cookiesObject["id_account_fb_mongo"] || "";
     const data = await fetch(`${process.env.NEXT_PUBLIC_EXTERNAL_API}/changeStatusCampFacebook?campaign_id=${campaign_id}&status=${status}`, {
         method: "GET",
         headers: {

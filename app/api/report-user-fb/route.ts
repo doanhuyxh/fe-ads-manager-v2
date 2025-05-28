@@ -21,7 +21,6 @@ export async function POST(req: NextRequest) {
         const body = await req.json();
         const { _id, name, keyword, column } = body;
         await connectToDB();
-        let user;
         if (_id) {
             const updateData: any = { name, keyword, column};
             let report = await ReportUserFb.findByIdAndUpdate(_id, updateData, { new: true });

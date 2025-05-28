@@ -2,7 +2,7 @@
 import '../../../styles/few.css'
 import React, { useMemo, useEffect, useState, useCallback } from 'react';
 import { Table, Input, DatePicker, Form, Checkbox, Modal, Row, Col, Divider, Popconfirm, Tooltip, Button, Badge, Select, message, Card, Skeleton, Spin } from 'antd';
-import { PoweroffOutlined, LoadingOutlined  } from '@ant-design/icons';
+import { PoweroffOutlined, LoadingOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 
 
@@ -19,8 +19,8 @@ import {
 } from "@dnd-kit/sortable";
 import dayjs from "dayjs";
 
-import {get_report_fb, save_report_fb, delete_report_fb} from "../../../libs/ApiClient/ReportFbApi";
-import { get_all_fb_fetch_campaign_data_v20, changeStatusCampFacebook,  get_fb_campaigns_id_and_name } from '../../../libs/ApiClient/ExternalDataApi';
+import { get_report_fb, save_report_fb, delete_report_fb } from "../../../libs/ApiClient/ReportFbApi";
+import { get_all_fb_fetch_campaign_data_v20, changeStatusCampFacebook, get_fb_campaigns_id_and_name } from '../../../libs/ApiClient/ExternalDataApi';
 //get_ads_notify_facebook, save_notification_ads_fb,
 
 import ReportUserFb from '../../../libs/types/ReportUserFb';
@@ -88,7 +88,11 @@ export default function Page() {
                 return (
                     <Button
                         type="default"
-                        className={status === "PAUSED" ? 'bg-red-500 text-white font-bold' : 'bg-green-500 text-white font-bold'}
+                        style={{
+                            backgroundColor: status === "PAUSED" ? "#ef4444" : "#22c55e", // Tailwind: red-500 / green-500
+                            color: "#fff",
+                            fontWeight: "bold"
+                        }}
                         icon={<PoweroffOutlined />}
                         loading={loadingStatusCamp.status && loadingStatusCamp.id == campaign_id}
                         disabled={loadingStatusCamp.id == campaign_id}
@@ -192,7 +196,7 @@ export default function Page() {
             render: (_, { conditions }) => {
                 return (
                     <div className="flex flex-col gap-2">
-                        {conditions.map((item:any, index:number) => (
+                        {conditions.map((item: any, index: number) => (
                             <div key={index} className="border p-2 rounded-md bg-gray-50">
                                 <div>
                                     <strong>Loại cảnh báo:</strong>{" "}
@@ -334,11 +338,11 @@ export default function Page() {
         setConditions([...conditions, { key: "", condition: "", value: "" }]);
     };
 
-    const removeCondition = (index:any) => {
+    const removeCondition = (index: any) => {
         setConditions(conditions.filter((_, i) => i !== index));
     };
 
-    const handleConditionChange = (index:any, field:any, value:any) => {
+    const handleConditionChange = (index: any, field: any, value: any) => {
         const newConditions = [...conditions];
         newConditions[index][field] = value;
         setConditions(newConditions);
@@ -360,7 +364,7 @@ export default function Page() {
     };
 
     // Hàm xử lý kéo thả độ rộng cột
-    const handleResize = (index:any) => (e, { size }) => {
+    const handleResize = (index: any) => (e, { size }) => {
         setColumns((prevColumns) => {
             const newColumns = [...prevColumns];
             newColumns[index] = { ...newColumns[index], width: size.width };
@@ -575,7 +579,7 @@ export default function Page() {
     const getReportData = async () => {
         try {
             const res = await get_report_fb()
-            setDataReportFb(res.data||[])
+            setDataReportFb(res.data || [])
         } catch (error) {
             console.log(error)
         }
@@ -589,13 +593,8 @@ export default function Page() {
                 name: values.name,
                 keyword: values.keyword,
                 column: checkedListReport,
-                id: ""
+                "_id": values._id
             }
-
-            if (values.id) {
-                data.id = values.id
-            }
-
             const res = await save_report_fb(data)
             setModalLoadingCorfirm(false)
             setOpenModalReport(false)
@@ -645,8 +644,7 @@ export default function Page() {
     const EditReport = async (id) => {
 
         const edit_data = dataReportFb.find(i => i._id == id)
-
-        form.setFieldValue("_id", edit_data?._id)
+        form.setFieldValue("_id", id)
         form.setFieldValue("name", edit_data?.name)
         form.setFieldValue("keyword", edit_data?.keyword)
         if (edit_data?.column) {
@@ -682,14 +680,14 @@ export default function Page() {
             return
         }
 
-        const run_data = dataReportFb.find(i => i.id == id)
+        const run_data = dataReportFb.find(i => i._id == id)
         setActiveReport(id)
-        if (run_data.column) {
+        if (run_data?.column) {
             setCheckedList(run_data.column)
         }
         const new_ads: any[] = []
         adsData.forEach((item: any) => {
-            if (item.name.includes(run_data.keyword)) {
+            if (item.name.includes(run_data?.keyword)) {
                 new_ads.push(item)
             }
         })
@@ -778,7 +776,7 @@ export default function Page() {
         return data.map((record, index) => (
             <Card key={index} style={{ marginBottom: 16 }} className='border-2'>
                 {newColumns.map((col) => {
-                    let campaign_id = record.campaign_id;                    
+                    let campaign_id = record.campaign_id;
                     let title_col = col!.title?.toString() || "";
                     if (col!.key === "onsite_web_purchase") {
                         title_col = "Lượt mua";
@@ -874,7 +872,7 @@ export default function Page() {
                     }
                     if (!col.hidden && totalValues[col!.key!.toString()] !== "") {
                         return (
-                            <div key={col.key} style={{ display: "flex", justifyContent: "space-between", padding: "8px",borderBottom: "1px solid #f0f0f0" }}>
+                            <div key={col.key} style={{ display: "flex", justifyContent: "space-between", padding: "8px", borderBottom: "1px solid #f0f0f0" }}>
                                 <strong className='text-blue-600'>{title_col}:</strong>
                                 <span className='text-black font-bold'>{formatNumber2(totalValues[col!.key!.toString()])}</span>
                             </div>
@@ -971,14 +969,14 @@ export default function Page() {
 
                 <div className='flex flex-row gap-2 overflow-auto max-h-[100px] lg:max-h-[unset] lg:max-w-[1400px]'>
                     <div className='m-auto'>
-                        <button className='text-nowrap px-2 rounded-lg bg-green-500 hover:bg-green-600 text-white' onClick={() => setOpenModalReport(true)}>
+                        <button className='text-nowrap px-2 py-1 rounded-lg bg-green-500 hover:bg-green-600 text-white' onClick={() => setOpenModalReport(true)}>
                             <i className="fa-solid fa-plus mx-1"></i>
                             Tạo báo cáo
                         </button>
                     </div>
                     {dataReportFb && dataReportFb.map((item, index) => {
                         return (
-                            <Button disabled={loadingData} key={index} className={`px-2 py-1 rounded-lg border border-dashed border-red-900 flex gap-2 ${activeReport == item._id ? "!bg-green-500" :""}`}>
+                            <Button disabled={loadingData} key={index} className={`px-2 py-1 rounded-lg border border-dashed border-red-900 flex gap-2 ${activeReport == item._id ? "!bg-green-500" : ""}`}>
                                 <span className='text-blue-600 m-auto text-nowrap' onClick={() => RunReport(item._id)}>{item.name}</span>
                                 <span className='flex flex-row gap-1 my-1'>
 
@@ -1231,7 +1229,7 @@ export default function Page() {
 
                 <Form layout="vertical" form={form}>
 
-                    <Form.Item name="id" hidden>
+                    <Form.Item name="_id" hidden>
                         <Input />
                     </Form.Item>
 
