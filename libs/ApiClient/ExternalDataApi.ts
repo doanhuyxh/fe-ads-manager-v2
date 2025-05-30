@@ -41,7 +41,7 @@ export async function changeStatusCampFacebook(campaign_id: any, status: any) {
 }
 
 
-export async function get_pos_cake_analytics_sale_server(until: string, since: string, filter: any) {
+export async function get_pos_cake_analytics_sale_server(since: string, until: string, filter: any) {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_EXTERNAL_API}/pos_cake_analytics?until=${until}&since=${since}`, {
       method: "POST",
@@ -50,7 +50,7 @@ export async function get_pos_cake_analytics_sale_server(until: string, since: s
       },
       body: JSON.stringify(filter)
     });
-    return response;
+    return await response.json();
   } catch (error: any) {
     return {
       "data": [],

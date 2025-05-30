@@ -248,7 +248,6 @@ export default function Page() {
             }
 
 
-
             setAdsDataTA({
                 chiphi: tempTA,
                 doanhThu: tempDoanhThuTA
