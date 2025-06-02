@@ -410,7 +410,7 @@ export default function Page() {
     );
 
     const options = columns.map(({ key, title }) => ({
-        label: String(title),
+        label: title,
         value: key,
     }));
 
@@ -1206,6 +1206,7 @@ export default function Page() {
                 title="Tuỳ chỉnh cột">
                 <Row gutter={16}>
                     {options.map((option, index) => (
+                        
                         <Col xs={24} sm={12} md={8} key={index}>
                             <Checkbox
                                 value={option.value}
