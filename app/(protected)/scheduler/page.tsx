@@ -305,9 +305,7 @@ export default function SchedulerPage() {
     }, [])
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6">
-            <div className="max-w-7xl mx-auto">
-                {/* Header */}
+            <>
                 <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
                     <div className="flex justify-between items-center">
                         <div>
@@ -325,7 +323,6 @@ export default function SchedulerPage() {
                     </div>
                 </div>
 
-                {/* Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                     <div className="bg-white p-4 rounded-lg shadow-sm">
                         <div className="flex items-center justify-between">
@@ -379,7 +376,6 @@ export default function SchedulerPage() {
                     </div>
                 </div>
 
-                {/* Table */}
                 <div className="bg-white rounded-lg shadow-sm">
                     <Table
                         columns={columns}
@@ -392,10 +388,10 @@ export default function SchedulerPage() {
                             showTotal: (total, range) => `${range[0]}-${range[1]} của ${total} lịch trình`,
                         }}
                         className="p-6"
+                        scroll={{ x: 'max-content' }}
                     />
                 </div>
 
-                {/* Modal thêm/sửa */}
                 <Modal
                     title={editingSchedule ? "Chỉnh sửa Lịch trình" : "Thêm Lịch trình mới"}
                     open={isModalVisible}
@@ -505,7 +501,6 @@ export default function SchedulerPage() {
                     </Form>
                 </Modal>
 
-                {/* Modal xem chi tiết */}
                 <Modal
                     title="Chi tiết Lịch trình"
                     open={isViewModalVisible}
@@ -587,7 +582,6 @@ export default function SchedulerPage() {
                         </div>
                     )}
                 </Modal>
-            </div>
-        </div>
+            </>
     )
 }

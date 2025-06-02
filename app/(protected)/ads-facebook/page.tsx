@@ -1,11 +1,10 @@
 'use client'
 import '../../../styles/few.css'
 import React, { useMemo, useEffect, useState, useCallback } from 'react';
+import { useRouter } from "next/navigation"
 import { Table, Input, DatePicker, Form, Checkbox, Modal, Row, Col, Divider, Popconfirm, Tooltip, Button, Badge, Select, message, Card, Skeleton, Spin } from 'antd';
 import { PoweroffOutlined, LoadingOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-
-
 import {
     DndContext,
     useSensor,
@@ -33,7 +32,7 @@ const { RangePicker } = DatePicker;
 const { Option } = Select;
 
 export default function Page() {
-
+    const router = useRouter()
     const { styles } = useStyle();
 
     const [form] = Form.useForm()
@@ -80,9 +79,25 @@ export default function Page() {
     ];
 
     const initColumns: ColumnsType<any & { title: React.ReactNode }> = [
-        { title: 'Tên tài khoản', dataIndex: 'account_name', key: 'account_name', sorter: true },
+        {
+            title: 'Tên tài khoản', dataIndex: 'account_name', key: 'account_name', sorter: true, onCell: (record) => ({
+                onClick: () => {
+                    localStorage.setItem("campaign_name", record.name)
+                    router.push(`/ads-facebook/content?campaign_id=${record.campaign_id}`)
+                },
+                style: { cursor: 'pointer', color: '#1677ff' }, // style gợi ý có thể click
+            }),
+        },
         //{ title: 'ID tài khoản', dataIndex: 'account_id', key: 'account_id' },
-        { title: 'Chiến dịch', dataIndex: 'name', key: 'name', fixed: 'left', sorter: true },
+        {
+            title: 'Chiến dịch', dataIndex: 'name', key: 'name', fixed: 'left', sorter: true, onCell: (record) => ({
+                onClick: () => {
+                    localStorage.setItem("campaign_name", record.name)
+                    router.push(`/ads-facebook/content?campaign_id=${record.campaign_id}`)
+                },
+                style: { cursor: 'pointer', color: '#1677ff' }, // style gợi ý có thể click
+            }),
+        },
         {
             title: 'Trạng thái', dataIndex: 'status', key: 'status', align: "center", render: (_, { status, campaign_id }) => {
                 return (
@@ -395,7 +410,7 @@ export default function Page() {
     );
 
     const options = columns.map(({ key, title }) => ({
-        label: title,
+        label: String(title),
         value: key,
     }));
 
@@ -501,7 +516,6 @@ export default function Page() {
     const CallData = async () => {
         setLoadingData(true);
         try {
-
             let dateStart;
             if (dates[0] === null) {
                 dateStart = dayjs().startOf("day").format("YYYY-MM-DD");
@@ -642,7 +656,6 @@ export default function Page() {
     }
 
     const EditReport = async (id) => {
-
         const edit_data = dataReportFb.find(i => i._id == id)
         form.setFieldValue("_id", id)
         form.setFieldValue("name", edit_data?.name)
@@ -699,9 +712,7 @@ export default function Page() {
 
     const AddNotifyAds = async () => {
         try {
-
             const values = await formAdsNotify.validateFields()
-
             const id = values.id
             const camp_id = values.camp_id
             if (!id && notifyAdsData.find(i => i.camp_id == camp_id)) {
@@ -711,8 +722,6 @@ export default function Page() {
                 });
                 return
             }
-
-
             const data = {
                 id: "",
                 key: values.camp_id,
@@ -947,7 +956,6 @@ export default function Page() {
     }, [])
 
 
-
     if (loading) {
         return null
     }
@@ -969,7 +977,7 @@ export default function Page() {
 
                 <div className='flex flex-row gap-2 overflow-auto max-h-[100px] lg:max-h-[unset] lg:max-w-[1400px]'>
                     <div className='m-auto'>
-                        <button className='text-nowrap px-2 py-1 rounded-lg bg-green-500 hover:bg-green-600 text-white' onClick={() => setOpenModalReport(true)}>
+                        <button className='text-nowrap px-2 py-1 rounded-lg bg-green-500 hover:bg-green-600 text-white cursor-pointer' onClick={() => setOpenModalReport(true)}>
                             <i className="fa-solid fa-plus mx-1"></i>
                             Tạo báo cáo
                         </button>
@@ -1023,7 +1031,7 @@ export default function Page() {
                     </div>
 
                     <div className='flex gap-2 shadow-lg rounded p-2 m-1'>
-                        <span className='opacity-60 cursor-not-allowed m-auto text-sm lg:text-base text-black'>Tuỳ chỉnh cột</span>
+                        <span className='opacity-60 cursor-not-allowed m-auto text-sm lg:text-base text-black text-nowrap'>Tuỳ chỉnh cột</span>
                         <Tooltip placement="top" title={"Sẵp xếp cột"} arrow={false}>
                             <Button onClick={() => setOpenModalSortColumn(true)} className='px-2 py-1 border-1 rounded-md text-black border-red-300 hover:bg-blue-600 hover:text-white'>
                                 <i className="fa-solid fa-filter"></i>
@@ -1056,7 +1064,7 @@ export default function Page() {
                         </Tooltip>
                     </div>
 
-                    <div className='flex p-2 m-1'>
+                    {/* <div className='flex p-2 m-1'>
                         <Button onClick={() => setOpenModalNotifyAds(true)} className='px-2 py-1 border-1 rounded-md text-black border-red-500 hover:bg-blue-600 m-auto'>
                             <Badge
                                 offset={[4, -8]}
@@ -1067,7 +1075,7 @@ export default function Page() {
                                 </span>
                             </Badge>
                         </Button>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 
@@ -1220,7 +1228,6 @@ export default function Page() {
                 open={openModalReport}
                 width={900}
                 onCancel={() => setOpenModalReport(false)}
-                onClose={() => setOpenModalReport(false)}
                 confirmLoading={modalLoadingCorfirm}
                 onOk={SaveReport}
                 title={

@@ -1,5 +1,5 @@
 'use client'
-
+import '../../../styles/few.css'
 import React, { useEffect, useState } from "react";
 import { DatePicker, Button, Space, Table, Tooltip } from "antd";
 import dayjs from "dayjs";

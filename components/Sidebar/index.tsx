@@ -43,7 +43,7 @@ const menuItems: MenuItem[] = [
   {
     icon: <FontAwesomeIcon icon={faDollarSign} />,
     label: "Doanh thu",
-    route: "/doanh-thu",
+    route: "/revenue",
     roles: ["user", "admin"],
   },
   {
@@ -87,7 +87,7 @@ const AdminSideBar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   return (
     <ClickOutside onClick={() => setSidebarOpen(false)}>
       <aside
-        className={`absolute left-0 top-0 flex h-screen w-72.5 flex-col overflow-y-hidden bg-white duration-300 ease-linear lg:static lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        className={`absolute left-0 top-0 flex h-screen w-72.5 flex-col overflow-y-hidden bg-white shadow-2xl duration-300 ease-linear lg:static lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
       >
         <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">

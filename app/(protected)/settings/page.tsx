@@ -175,9 +175,7 @@ export default function Page() {
 
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6">
-            <div className="max-w-7xl mx-auto">
-                {/* Header */}
+            <>
                 <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
                     <div className="flex justify-between items-center">
                         <div>
@@ -195,7 +193,6 @@ export default function Page() {
                     </div>
                 </div>
 
-                {/* Table */}
                 <div className="bg-white rounded-lg shadow-sm">
                     <Table
                         columns={columns}
@@ -212,7 +209,6 @@ export default function Page() {
                     />
                 </div>
 
-                {/* Modal thêm/sửa */}
                 <Modal
                     title={editingItem ? "Chỉnh sửa Item" : "Thêm Item mới"}
                     open={isModalVisible}
@@ -251,7 +247,6 @@ export default function Page() {
                     </Form>
                 </Modal>
 
-                {/* Modal xem chi tiết */}
                 <Modal
                     title="Chi tiết Item"
                     open={isViewModalVisible}
@@ -290,7 +285,6 @@ export default function Page() {
                         </div>
                     )}
                 </Modal>
-            </div>
-        </div>
+            </>
     )
 }

@@ -1,7 +1,8 @@
 import { fetcher } from "../fetch";
+import ApiResponse from "../types/ApiResponse";
 
 // get_ads_notify_facebook, save_notification_ads_fb
-export async function get_all_fb_fetch_campaign_data_v20(since: string,until: string) {
+export async function get_all_fb_fetch_campaign_data_v20(since: string, until: string) {
   try {
     const response = await fetcher<any>(`/api/external/get_all_fb_fetch_campaign_data_v20?until=${until}&since=${since}`);
     return response;
@@ -63,4 +64,18 @@ export async function get_pos_cake_analytics_sale_server(since: string, until: s
   }
 }
 
-
+export async function get_ads_content_in_campain_id(campaign_id: string) {
+  try {
+    const response = await fetch(`/api/external/get-ads-fb?campaign_id=${campaign_id}`, {
+      method: "GET",
+    });
+    let jsonData = await response.json();
+    return jsonData
+  } catch (error: any) {
+    return {
+      status: false,
+      data: null,
+      message: error.message || "Lỗi đăng nhập",
+    };
+  }
+}
