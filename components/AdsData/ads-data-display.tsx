@@ -48,7 +48,7 @@ export function AdsDataDisplay({adsData}: {adsData:FacebookAdsApiResponse}) {
         }}
       >
         <Title level={2} style={{ margin: 0 }}>
-          Có ({adsData.data.length} trong chiến dịch)
+          Có {adsData.data.length} quảng cáo trong chiến dịch
         </Title>
         <AdStats
           totalAds={allAdCreatives.length}
