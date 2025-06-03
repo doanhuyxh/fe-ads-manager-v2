@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 
 import { get_ads_content_in_campain_id } from '../../../../libs/ApiClient/ExternalDataApi'
 import { AdsDataDisplay } from '../../../../components/AdsData/ads-data-display'
-import { Header } from '../../../../components/AdsData/header'
+import { Header } from '../../../../components/AdsData/ads-header'
 
 export default function Page() {
     const [data, setData] = useState<any>([])

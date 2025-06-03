@@ -52,7 +52,6 @@ function VideoRenderer({
       />
     )
   }
-
   // Video failed to load - show fallback
   return (
     <>
@@ -169,7 +168,7 @@ function AdContent({ ad, callToAction }: { ad: AdCreative; callToAction: string 
         {ad.title || "Không lấy được tiêu đề ads"}
       </Typography.Title>
 
-      <Paragraph ellipsis={{ rows: 3 }} style={{ marginBottom: 6, color: "#666" }}>
+      <Paragraph style={{ marginBottom: 6, color: "#666" }}>
         {ad.body || "Không lấy được nội dung ads"}
       </Paragraph>
 

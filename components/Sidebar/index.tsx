@@ -70,19 +70,22 @@ const AdminSideBar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const [pageName, setPageName] = useLocalStorage("selectedMenu", "dashboard");
   const [role, setRole] = useState<string | null>(null);
 
-  useEffect(() => {
-    
-    const userRole = localStorage.getItem("role"); // ví dụ: 'admin' hoặc 'user'
-    setRole(userRole);
-  }, []);
-
   const LogOut = async () => {
     await logout();
     window.location.href = "/";
   };
 
-//   const filteredMenu = menuItems.filter((item) => item.roles.includes(role || ""));
+  //   const filteredMenu = menuItems.filter((item) => item.roles.includes(role || ""));
   const filteredMenu = menuItems;
+
+  useEffect(() => {
+    const userRole = localStorage.getItem("role"); // ví dụ: 'admin' hoặc 'user'
+    setRole(userRole);
+  }, []);
+
+  useEffect(() => {
+    setSidebarOpen(false)
+  }, [pageName])
 
   return (
     <ClickOutside onClick={() => setSidebarOpen(false)}>

@@ -35,7 +35,7 @@ export default function Header({ sidebarOpen, setSidebarOpen }: { sidebarOpen: b
                         onClick={() => setSidebarOpen(!sidebarOpen)}
                         className="block rounded-lg border border-gray-300 bg-white py-2 px-3 shadow-sm hover:bg-gray-100"
                     >
-                        <i className="text-black fa-solid fa-bars" />
+                        <i className="!text-black fa-solid fa-bars" />
                     </button>
                 </div>
 

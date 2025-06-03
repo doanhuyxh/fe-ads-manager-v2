@@ -8,7 +8,7 @@ import { ConfigProvider } from 'antd';
 import 'dayjs/locale/vi';
 import dayjs from "dayjs";
 dayjs.locale('vi');
-
+import '../../styles/few.css'
 interface MainLayoutProps {
   children: ReactNode;
 }

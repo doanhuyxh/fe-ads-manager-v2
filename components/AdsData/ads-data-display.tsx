@@ -47,18 +47,8 @@ export function AdsDataDisplay({adsData}: {adsData:FacebookAdsApiResponse}) {
           gap: 16,
         }}
       >
-        <Title level={2} style={{ margin: 0 }}>
-          Có {adsData.data.length} quảng cáo trong chiến dịch
-        </Title>
-        <AdStats
-          totalAds={allAdCreatives.length}
-          videoAds={allAdCreatives.filter((ad) => ad.video_id).length}
-          imageAds={allAdCreatives.filter((ad) => ad.image_url && !ad.video_id).length}
-        />
       </div>
-
       <AdFilters activeFilter={activeFilter} onFilterChange={filterAds} />
-
       <Row gutter={[24, 24]}>
         {filteredAds.map((ad, index) => (
           <Col key={ad.id || index} xs={24} sm={8} lg={4}>

@@ -1,5 +1,4 @@
 'use client';
-import '../../../styles/few.css'
 import dynamic from "next/dynamic";
 import { DatePicker, Space, Button, Spin, Tooltip } from "antd";
 import { useEffect, useState } from 'react';

@@ -1,5 +1,4 @@
 'use client'
-import '../../../styles/few.css'
 import React, { useMemo, useEffect, useState, useCallback } from 'react';
 import { useRouter } from "next/navigation"
 import { Table, Input, DatePicker, Form, Checkbox, Modal, Row, Col, Divider, Popconfirm, Tooltip, Button, Badge, Select, message, Card, Skeleton, Spin } from 'antd';
@@ -794,15 +793,27 @@ export default function Page() {
                         title_col = "Kết quả";
                     }
 
+                    const handleViewCampain = () => {
+                        if (col.key != "account_name" && col.key != "name") {
+                            return
+                        }
+                        router.push("/ads-facebook/content?campaign_id=" + campaign_id)
+                    }
+
                     if (!col.hidden) {
                         return (
-                            <div key={col.key} style={{ display: "flex", justifyContent: "space-between", padding: "8px", borderBottom: "1px solid #f0f0f0" }}>
+                            <div key={col.key} style={{ display: "flex", justifyContent: "space-between", padding: "8px", borderBottom: "1px solid #f0f0f0" }} onClick={handleViewCampain}>
                                 <strong className='text-wrap min-w-[30%] text-blue-600 font-medium'>{title_col}:</strong>
                                 {
                                     col.key === "status" ? (<Button
                                         type="default"
                                         onClick={() => ChangeStatusCamp(campaign_id, record[col!.key!.toString()] === "PAUSED" ? "ACTIVE" : "PAUSED")}
-                                        className={col!.key!.toString() === "PAUSED" ? 'bg-red-500 text-white font-bold' : 'bg-green-500 text-white font-bold'}>
+                                        style={{
+                                            backgroundColor: record[col!.key!.toString()] === "PAUSED" ? "#ef4444" : "#22c55e", // đỏ hoặc xanh
+                                            color: "#ffffff", // trắng
+                                            fontWeight: "bold"
+                                        }}
+                                    >
                                         {record[col!.key!.toString()] === "PAUSED" ? "Tắt" : "Đang chạy"}
                                     </Button>) : <span className='block text-right text-black font-bold'>{record[col!.key!.toString()]}</span>
                                 }
@@ -1206,7 +1217,7 @@ export default function Page() {
                 title="Tuỳ chỉnh cột">
                 <Row gutter={16}>
                     {options.map((option, index) => (
-                        
+
                         <Col xs={24} sm={12} md={8} key={index}>
                             <Checkbox
                                 value={option.value}
