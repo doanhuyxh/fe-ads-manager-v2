@@ -51,7 +51,7 @@ export function AdsDataDisplay({adsData}: {adsData:FacebookAdsApiResponse}) {
       <AdFilters activeFilter={activeFilter} onFilterChange={filterAds} />
       <Row gutter={[24, 24]}>
         {filteredAds.map((ad, index) => (
-          <Col key={ad.id || index} xs={24} sm={8} lg={4}>
+          <Col key={ad.id || index} sm={24} lg={8}>
             <AdCard ad={ad} />
           </Col>
         ))}

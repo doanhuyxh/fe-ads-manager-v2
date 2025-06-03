@@ -2,11 +2,10 @@
 
 import { useEffect, useState } from "react"
 import Image from "next/image"
-import { Card, Tag, Typography, Spin } from "antd"
+import { Card, Tag, Spin } from "antd"
 import type { AdCreative } from "../../libs/types/FacebookAdsApiResponse"
 import { copyToClipboard } from "../../libs/web-api"
-
-const { Paragraph, Text } = Typography
+import callToActionLabels from "../../libs/utils/action_fb"
 
 interface AdCardProps {
   ad: AdCreative
@@ -24,15 +23,7 @@ function VideoRenderer({
 }) {
   if (loadingVideo) {
     return (
-      <div
-        style={{
-          width: 320,
-          height: 180,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+      <div className="w-full h-[200px] flex justify-center items-center bg-gray-100">
         <Spin />
       </div>
     )
@@ -43,47 +34,36 @@ function VideoRenderer({
       <video
         src={videoSrc}
         controls
-        style={{
-          width: "auto",
-          height: 200,
-          display: "block",
-          margin:'auto'
-        }}
+        className="w-full max-h-[300px] mx-auto rounded-md"
       />
     )
   }
-  // Video failed to load - show fallback
+
   return (
-    <>
+    <div
+      className="relative w-full cursor-pointer"
+      onClick={() => {
+        copyToClipboard(ad.object_story_spec?.video_data?.image_url || ad.thumbnail_url)
+      }}
+    >
       {ad.thumbnail_url ? (
-        <div style={{ width: "100%", position: "relative" }} onClick={()=>{
-            copyToClipboard(ad.object_story_spec?.video_data?.image_url || ad.thumbnail_url)
-        }}>
-          <Image
-            src={ad.object_story_spec?.video_data?.image_url || ad.thumbnail_url}
-            alt="Thumbnail fallback"
-            layout="responsive"
-            width={600}
-            height={600}
-            objectFit="contain"
-            unoptimized
-          />
-        </div>
+        <Image
+          src={ad.object_story_spec?.video_data?.image_url || ad.thumbnail_url}
+          alt="Thumbnail fallback"
+          layout="responsive"
+          width={600}
+          height={600}
+          objectFit="contain"
+          unoptimized
+          className="rounded-md"
+        />
       ) : (
-        <div
-          style={{
-            height: 200,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            color: "#999",
-          }}
-        >
+        <div className="h-[200px] flex justify-center items-center text-gray-400 bg-gray-100">
           Không có ảnh thay thế
         </div>
       )}
-      <div style={{ textAlign: "center", color: "#999", padding: 8 }}>Không lấy được video</div>
-    </>
+      <p className="text-center text-sm text-gray-400 py-2">Không lấy được video</p>
+    </div>
   )
 }
 
@@ -91,9 +71,12 @@ function VideoRenderer({
 function ImageRenderer({ ad }: { ad: AdCreative }) {
   if (ad.image_url || ad.thumbnail_url) {
     return (
-      <div style={{ width: "100%", position: "relative" }} onClick={()=>{
-            copyToClipboard(ad.image_url || ad.thumbnail_url)
-        }}>
+      <div
+        className="relative w-full cursor-pointer"
+        onClick={() => {
+          copyToClipboard(ad.image_url || ad.thumbnail_url)
+        }}
+      >
         <Image
           src={ad.image_url || ad.thumbnail_url || ""}
           alt={ad.title || "Ad creative"}
@@ -102,22 +85,15 @@ function ImageRenderer({ ad }: { ad: AdCreative }) {
           height={600}
           objectFit="contain"
           unoptimized
+          className="rounded-md"
         />
       </div>
     )
   }
 
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        height: 200,
-        color: "#999",
-      }}
-    >
-      No image available
+    <div className="h-[200px] flex items-center justify-center text-gray-400 bg-gray-100">
+      Không có ảnh
     </div>
   )
 }
@@ -146,40 +122,63 @@ function MediaCover({
   }
 
   return (
-    <div style={{ width: "100%", backgroundColor: "#f5f5f5", position: "relative" }}>
+    <div className="relative w-full bg-gray-50 rounded-md overflow-hidden">
       {adType === "Video" ? (
         <VideoRenderer videoSrc={videoSrc} loadingVideo={loadingVideo} ad={ad} />
       ) : (
         <ImageRenderer ad={ad} />
       )}
 
-      <div style={{ position: "absolute", top: 8, left: 8 }}>
+      <div className="absolute top-2 left-2 z-10">
         <Tag color={getTagColor(adType)}>{adType}</Tag>
       </div>
     </div>
   )
 }
 
+//Ad Body
+function AdBody({ body }: { body: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const maxLength = 150;
+
+  if (!body) {
+    return <p className="text-sm text-gray-700">Không lấy được nội dung ads</p>;
+  }
+
+  const shouldTruncate = body.length > maxLength;
+  const displayedText = expanded || !shouldTruncate ? body : body.slice(0, maxLength) + "...";
+
+  return (
+    <div>
+      <p className="text-sm text-gray-700 whitespace-pre-wrap">{displayedText}</p>
+      {shouldTruncate && (
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="!text-blue-600 hover:underline text-sm mt-1 cursor-pointer"
+        >
+          {expanded ? "Ẩn bớt" : "Xem thêm"}
+        </button>
+      )}
+    </div>
+  );
+}
+
 // Ad Content Component
 function AdContent({ ad, callToAction }: { ad: AdCreative; callToAction: string | null }) {
   return (
-    <>
-      <Typography.Title level={5} style={{ marginTop: 0, marginBottom: 8 }}>
+    <div className="mt-4 space-y-2 flex flex-col gap-2">
+      <h2 className="text-base font-semibold text-gray-900">
         {ad.title || "Không lấy được tiêu đề ads"}
-      </Typography.Title>
+      </h2>
 
-      <Paragraph style={{ marginBottom: 6, color: "#666" }}>
-        {ad.body || "Không lấy được nội dung ads"}
-      </Paragraph>
+      <AdBody body={ad.body ||''} />
 
-      {callToAction && <Tag style={{ marginBottom: 8 }}>{callToAction.replace(/_/g, " ")}</Tag>}
+      {callToAction && (
+        <Tag className="text-xs">  {callToActionLabels[callToAction] || callToAction.replace(/_/g, " ")}</Tag>
+      )}
 
-      <div style={{ marginTop: 8 }}>
-        <Text type="secondary" style={{ fontSize: 12 }}>
-          ADS ID: {ad.id}
-        </Text>
-      </div>
-    </>
+      <p className="text-[12px] text-gray-400">ADS ID: {ad.id}</p>
+    </div>
   )
 }
 
@@ -213,10 +212,10 @@ export function AdCard({ ad }: AdCardProps) {
   }, [ad.video_id])
 
   const getAdType = (): string => {
-  if (ad.video_id) return "Video"
-  if (ad.image_url || ad.thumbnail_url) return "Image" // Thêm thumbnail_url
-  return "Text"
-}
+    if (ad.video_id) return "Video"
+    if (ad.image_url || ad.thumbnail_url) return "Image"
+    return "Text"
+  }
 
   const getCallToAction = (): string | null => {
     return (
@@ -230,12 +229,9 @@ export function AdCard({ ad }: AdCardProps) {
   const callToAction = getCallToAction()
 
   return (
-    <Card
-      hoverable
-      style={{ width: "100%", padding: 10 }}
-      cover={<MediaCover adType={adType} ad={ad} videoSrc={videoSrc} loadingVideo={loadingVideo} />}
-    >
+    <div className="w-full mx-auto bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 p-4 mb-4">
+      <MediaCover adType={adType} ad={ad} videoSrc={videoSrc} loadingVideo={loadingVideo} />
       <AdContent ad={ad} callToAction={callToAction} />
-    </Card>
+    </div>
   )
 }
