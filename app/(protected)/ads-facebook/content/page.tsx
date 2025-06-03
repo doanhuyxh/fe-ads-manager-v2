@@ -6,8 +6,10 @@ import { useSearchParams } from 'next/navigation'
 import { get_ads_content_in_campain_id } from '../../../../libs/ApiClient/ExternalDataApi'
 import { AdsDataDisplay } from '../../../../components/AdsData/ads-data-display'
 import { Header } from '../../../../components/AdsData/ads-header'
+import Loading from '../../../loading'
 
 export default function Page() {
+    const [isLoading, setIsLoading] = useState<boolean>(true)
     const [data, setData] = useState<any>([])
     const [campaign_name, setCampaign_name] = useState<string>("")
     const [error, setError] = useState<string | null>(null)
@@ -25,6 +27,8 @@ export default function Page() {
         } catch (err) {
             setError("Không lấy được quảng cáo")
             setData(null)
+        } finally {
+            setIsLoading(false)
         }
     }
 
@@ -36,6 +40,9 @@ export default function Page() {
     return (
         <>
             <Header name={`${campaign_name} `} />
+
+            {isLoading && <Loading/>    }
+
             {error ? (
                 <div style={{ color: "red", textAlign: "center", marginTop: 20 }}>
                     {error}
