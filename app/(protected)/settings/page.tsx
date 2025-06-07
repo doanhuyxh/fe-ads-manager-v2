@@ -66,13 +66,13 @@ export default function Page() {
                     <Button
                         type="text"
                         size="small"
-                        icon={<FontAwesomeIcon icon={faEye} className="text-blue-600 hover:text-blue-800" />}
+                        icon={<FontAwesomeIcon icon={faEye} className="!text-blue-600 !hover:text-blue-800" />}
                         onClick={() => showViewModal(record)}
                     />
                     <Button
                         type="text"
                         size="small"
-                        icon={<FontAwesomeIcon icon={faEdit} className="text-green-600 hover:text-green-800" />}
+                        icon={<FontAwesomeIcon icon={faEdit} className="!text-green-600 !hover:text-green-800" />}
                         onClick={() => showEditModal(record)}
                     />
                     <Popconfirm
@@ -86,7 +86,7 @@ export default function Page() {
                         <Button
                             type="text"
                             size="small"
-                            icon={<FontAwesomeIcon icon={faTrash} className="text-red-600 hover:text-red-800" />}
+                            icon={<FontAwesomeIcon icon={faTrash} className="!text-red-600 !hover:text-red-800" />}
                         />
                     </Popconfirm>
                 </Space>
@@ -179,7 +179,7 @@ export default function Page() {
                 <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
                     <div className="flex justify-between items-center">
                         <div>
-                            <h1 className="text-2xl font-bold text-gray-900">Quản lý Items</h1>
+                            <h1 className="text-2xl font-bold text-gray-900">Quản lý công ty</h1>
                             <p className="text-gray-600 mt-1">Quản lý danh sách Facebook tokens và pages</p>
                         </div>
                         <Button

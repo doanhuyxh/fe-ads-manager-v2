@@ -454,7 +454,7 @@ export default function SchedulerPage() {
                         label="Từ khóa"
                         name="keywords"
                         rules={[{ required: true, message: "Vui lòng nhập từ khóa!" }]}
-                        extra="Nhập các từ khóa sẽ xuất hiện trong chiến dịch"
+                        extra='Nhập các từ khóa sẽ xuất hiện trong chiến dịch, mỗi từ cách nhau bằng ","'
                     >
                         <Input
                             placeholder="Ví dụ: chào buổi sáng, tin tức mới, khuyến mãi"

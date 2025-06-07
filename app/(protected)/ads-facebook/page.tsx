@@ -699,8 +699,10 @@ export default function Page() {
         }
         const new_ads: any[] = []
         adsData.forEach((item: any) => {
-            if (item.name.includes(run_data?.keyword)) {
-                new_ads.push(item)
+            // xử lý nhiều từ khoá
+            const keywords = run_data?.keyword?.split(/\s*,\s*/);
+            if (keywords?.every(k => item.name.includes(k))) {
+                new_ads.push(item);
             }
         })
 
@@ -1216,7 +1218,7 @@ export default function Page() {
                 onOk={SaveShowColum}
                 title="Tuỳ chỉnh cột">
                 <Row gutter={16}>
-                    {options.map((option, index) => (
+                    {options.map((option:any, index) => (
 
                         <Col xs={24} sm={12} md={8} key={index}>
                             <Checkbox
@@ -1267,6 +1269,7 @@ export default function Page() {
                     <Form.Item
                         label="Từ khoá chiến dịch"
                         name="keyword"
+                        extra='Các từ khoá xuất hiện trong tên chiến dịch, các từ cách nhau bằng ","'
                         rules={[
                             {
                                 required: true,
