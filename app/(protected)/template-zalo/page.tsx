@@ -13,7 +13,7 @@ export default function Page() {
         { label: "{{setDay}}", description: "Ngày set" },
         { label: "{{lastDay}}", description: "Ngày hôm qua" },
         { label: "{{toDay}}", description: "Ngày hôm nay" },
-        { label: "{{title}}", description: "Tên tiêu đề" },
+        { label: "{{nameScheduler}}", description: "Tên hẹn giờ" },
         { label: "{{totalSpendLastDay}}", description: "Tổng chi phí ngày hôm qua" },
         { label: "{{totalSpend}}", description: "Tổng chi phí" },
         { label: "{{content}}", description: "Nội dung tin nhắn" },

@@ -3,13 +3,14 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface ISchedule extends Document {
   _id: string;
-  name:string;
+  name: string;
   time: string; // HH:mm format
   startDate: string; // YYYY-MM-DD format
   keywords: string;
   accountId: string;
   chatZaloId: string;
   status: "active" | "inactive";
+  templateZalo: string
 }
 
 const ScheduleSchema: Schema<ISchedule> = new mongoose.Schema({
@@ -48,6 +49,11 @@ const ScheduleSchema: Schema<ISchedule> = new mongoose.Schema({
     required: true,
     default: "inactive",
   },
+  templateZalo: {
+    type: String,
+    required: true,
+    default: '',
+  }
 });
 
 const ScheduleModel: Model<ISchedule> =

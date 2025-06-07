@@ -7,4 +7,5 @@ export default interface ScheduleData {
   accountId: string
   chatZaloId: string // Thêm trường này
   status: "active" | "inactive"
+  templateZalo: string
 }

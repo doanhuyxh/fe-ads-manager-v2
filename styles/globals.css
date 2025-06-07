@@ -76,7 +76,6 @@ body {
   cursor: default;
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
   max-width: 100%;
@@ -86,4 +85,8 @@ body {
 }
 .apexcharts-tooltip {
   color: #000 !important;
+}
+
+.ant-btn{
+  margin: 0 4px;
 }

@@ -19,19 +19,19 @@ export async function GET() {
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
-        const { _id, name, time, startDate, keywords, accountId, chatZaloId, status } = body;
+        const { _id, name, time, startDate, keywords, accountId, chatZaloId, status, templateZalo } = body;
         if (!time || !startDate || !keywords || !chatZaloId || !accountId || !name) {
             return errorResponse("vui lòng điền đủ thông tin");
         }
         await connectToDB();
         let schedule;
         if (_id) {
-            const updateData: any = { time, startDate, keywords, accountId, chatZaloId, status, name };
+            const updateData: any = { time, startDate, keywords, accountId, chatZaloId, status, name, templateZalo };
             
             schedule = await Schedule.findByIdAndUpdate(_id, updateData, { new: true });
             return successResponse(schedule, "Cập nhật thành công");
         } else {
-            schedule = await Schedule.create({ time, startDate, keywords, accountId, chatZaloId, status, name });
+            schedule = await Schedule.create({ time, startDate, keywords, accountId, chatZaloId, status, name, templateZalo  });
             return successResponse(schedule, "Tạo thông báo thành công");
         }
     } catch (error: any) {
