@@ -41,7 +41,7 @@ export default function Page() {
         <>
             <Header name={`${campaign_name} `} />
 
-            {isLoading && <Loading/>    }
+            {isLoading && <Loading />}
 
             {error ? (
                 <div style={{ color: "red", textAlign: "center", marginTop: 20 }}>

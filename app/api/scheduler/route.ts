@@ -36,6 +36,6 @@ export async function POST(req: NextRequest) {
         }
     } catch (error: any) {
         console.error("[POST_SCHEDULER_ERROR]", error);
-        return errorResponse("Lỗi server", error.message);
+        return errorResponse(error.message);
     }
 }

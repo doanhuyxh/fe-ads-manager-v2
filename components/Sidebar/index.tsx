@@ -6,7 +6,7 @@ import {
   faHandHoldingDollar,
   faDollarSign,
   faBuilding,
-  faUsers,
+  faMessage,
   faClock,
 } from "@fortawesome/free-solid-svg-icons";
 import { faFacebook } from "@fortawesome/free-brands-svg-icons";
@@ -44,6 +44,12 @@ const menuItems: MenuItem[] = [
     icon: <FontAwesomeIcon icon={faDollarSign} />,
     label: "Doanh thu",
     route: "/revenue",
+    roles: ["user", "admin"],
+  },
+  {
+    icon: <FontAwesomeIcon icon={faMessage} />,
+    label: "Mẫu tin nhắn Zalo",
+    route: "/template-zalo",
     roles: ["user", "admin"],
   },
   {

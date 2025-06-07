@@ -29,7 +29,7 @@ export default function Home() {
 
       if (dataLoginResponse.status) {
         messageApi.success("Đăng nhập thành công!")
-        router.push("/dashboard");
+        router.push("/report");
       } else {
         messageApi.error("Tài khoản hoặc mật khẩu không đúng")
       }
