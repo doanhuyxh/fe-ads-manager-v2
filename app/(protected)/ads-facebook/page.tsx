@@ -1044,7 +1044,6 @@ export default function Page() {
                     </div>
 
                     <div className='flex gap-2 shadow-lg rounded p-2 m-1'>
-                        <span className='opacity-60 cursor-not-allowed m-auto text-sm lg:text-base text-black text-nowrap'>Tuỳ chỉnh cột</span>
                         <Tooltip placement="top" title={"Sẵp xếp cột"} arrow={false}>
                             <Button onClick={() => setOpenModalSortColumn(true)} className='px-2 py-1 border-1 rounded-md text-black border-red-300 hover:bg-blue-600 hover:text-white'>
                                 <i className="fa-solid fa-filter"></i>
@@ -1052,7 +1051,7 @@ export default function Page() {
                         </Tooltip>
 
                         <button
-                            className='mx-2 px-2 py-1 border-1 rounded-md text-black border-red-300 hover:bg-blue-600 hover:text-white'
+                            className='mx-2 px-2 py-1 border-1 rounded-md text-black border-red-300 hover:bg-blue-600 hover:text-white cursor-pointer'
                             onClick={() => setOpenModal(true)}>
                             <Badge
                                 offset={[4, -8]}
@@ -1065,13 +1064,13 @@ export default function Page() {
                         </button>
 
                         <Tooltip placement="top" title={"Show All"} arrow={false}>
-                            <Button onClick={ShowAllTable} className='px-2 py-1 border-1 rounded-md text-black border-red-500 hover:bg-blue-600 hover:text-white'>
+                            <Button onClick={ShowAllTable} className='px-2 py-1 border-1 rounded-md text-black !border-red-500 !hover:bg-blue-600 !hover:text-white'>
                                 <i className="fa-solid fa-table"></i>
                             </Button>
                         </Tooltip>
 
                         <Tooltip placement="top" title={"Lưu độ rộng cột"} arrow={false}>
-                            <Button onClick={SaveResize} className='px-2 py-1 border-1 rounded-md text-black bg-yellow-500 hover:bg-blue-600 hover:text-white'>
+                            <Button onClick={SaveResize} className='px-2 py-1 border-1 rounded-md text-black !bg-yellow-500 !hover:bg-blue-600 !hover:text-white'>
                                 <i className="fa-regular fa-floppy-disk"></i>
                             </Button>
                         </Tooltip>
@@ -1092,11 +1091,14 @@ export default function Page() {
                 </div>
             </div>
 
-            <div className="px-5 py-2 shadow-lg bg-white rounded-lg mb-3">
+            <div className="px-5 py-2 shadow-lg bg-white rounded-lg mb-20">
                 {isMobile ? (
-                    <div className='flex justify-center'>
-                        {loadingData ? (<Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />) : <div>{renderMobileView(filteredData)}
-                            {renderSummaryMobile(filteredData)}</div>}
+                    <div className='flex flex-col'>
+                        <div className='flex justify-center'>
+                            {loadingData ? (<Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />) : <div>{renderMobileView(filteredData)}
+                                {renderSummaryMobile(filteredData)}</div>}
+                        </div>
+                         <div className='w-full h-10 mb-10'></div>
                     </div>
                 ) : (
                     <Table
@@ -1218,7 +1220,7 @@ export default function Page() {
                 onOk={SaveShowColum}
                 title="Tuỳ chỉnh cột">
                 <Row gutter={16}>
-                    {options.map((option:any, index) => (
+                    {options.map((option: any, index) => (
 
                         <Col xs={24} sm={12} md={8} key={index}>
                             <Checkbox
