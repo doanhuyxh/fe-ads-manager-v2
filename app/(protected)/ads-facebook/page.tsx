@@ -1033,14 +1033,21 @@ export default function Page() {
                                 <i className="fa-solid fa-sync-alt"></i>
                             </Button>
                         </Tooltip>
-
-                        <RangePicker
-                            onChange={handleChange}
-                            value={dates}
-                            presets={presets}
-                            className='m-auto'
-                            disabled={loadingData}
-                        />
+                        <div className="w-full max-w-full sm:max-w-md">
+                            <RangePicker
+                                onChange={handleChange}
+                                value={dates}
+                                presets={presets}
+                                className="w-full"
+                                disabled={loadingData}
+                                format="DD/MM/YYYY"
+                                classNames={{
+                                    popup: {
+                                        root: "custom-range-picker-dropdown",
+                                    },
+                                }}
+                            />
+                        </div>
                     </div>
 
                     <div className='flex gap-2 shadow-lg rounded p-2 m-1'>
@@ -1098,7 +1105,7 @@ export default function Page() {
                             {loadingData ? (<Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />) : <div>{renderMobileView(filteredData)}
                                 {renderSummaryMobile(filteredData)}</div>}
                         </div>
-                         <div className='w-full h-10 mb-10'></div>
+                        <div className='w-full h-10 mb-10'></div>
                     </div>
                 ) : (
                     <Table
@@ -1466,6 +1473,6 @@ export default function Page() {
                 </div>
             </Modal>
 
-        </div>
+        </div >
     );
 }
