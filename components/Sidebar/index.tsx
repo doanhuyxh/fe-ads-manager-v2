@@ -70,6 +70,12 @@ const menuItems: MenuItem[] = [
     route: "/scheduler",
     roles: ["user", "admin"],
   },
+  {
+    icon: <FontAwesomeIcon icon={faClock} />,
+    label: "Logs",
+    route: "/logs",
+    roles: ["user", "admin"],
+  },
 ];
 
 const AdminSideBar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
