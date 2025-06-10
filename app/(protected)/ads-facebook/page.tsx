@@ -18,6 +18,7 @@ import {
 import dayjs from "dayjs";
 
 import { get_report_fb, save_report_fb, delete_report_fb } from "../../../libs/ApiClient/ReportFbApi";
+import { saveLog } from '../../../libs/ApiClient/LogApi';
 import { get_all_fb_fetch_campaign_data_v20, changeStatusCampFacebook, get_fb_campaigns_id_and_name } from '../../../libs/ApiClient/ExternalDataApi';
 //get_ads_notify_facebook, save_notification_ads_fb,
 
