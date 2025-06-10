@@ -87,7 +87,7 @@ export default function Page() {
 
     return (
 
-        <div className="px-8 py-4 max-w-[800px]">
+        <div className="px-8 py-4 max-w-7xl m-auto">
             <div className="mb-6 flex flex-col items-center">
                 <Title level={2} className="flex items-center gap-3">
                     <InfoCircleOutlined />
