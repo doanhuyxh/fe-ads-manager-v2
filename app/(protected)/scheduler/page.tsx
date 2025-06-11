@@ -172,9 +172,9 @@ export default function SchedulerPage() {
             key: "typeSchedule",
             render: (typeSchedule: string) => {
                 const typeLabelMap: Record<string, string> = {
-                    "overy-day": "Mỗi ngày",
-                    "overy-hour": "Giờ",
-                    "overy-minute": "Phút",
+                    "every-day": "Mỗi ngày",
+                    "every-hour": "Giờ",
+                    "every-minute": "Phút",
                 };
 
                 return (
@@ -193,7 +193,7 @@ export default function SchedulerPage() {
             render: (_: any, record: any) => {
                 const { typeSchedule, time, distance } = record;
 
-                if (typeSchedule === "overy-day") {
+                if (typeSchedule === "every-day") {
                     return (
                         <div>
                             <p className="text-nowrap text-sm font-bold text-back-700 truncate" title={time}>
@@ -204,8 +204,8 @@ export default function SchedulerPage() {
                 }
 
                 const unitMap: Record<string, string> = {
-                    "overy-hour": "giờ",
-                    "overy-minute": "phút",
+                    "every-hour": "giờ",
+                    "every-minute": "phút",
                 };
 
                 return (
@@ -374,7 +374,7 @@ export default function SchedulerPage() {
     }
 
     useEffect(() => {
-        if (typeSchedule === "overy-day") {
+        if (typeSchedule === "every-day") {
             form.setFieldsValue({
                 time: form.getFieldValue("time") || '06:00',
                 distance: 1, // vẫn cần có nhưng không hiển thị
@@ -496,13 +496,13 @@ export default function SchedulerPage() {
                             rules={[{ required: true, message: "Vui lòng chọn kiểu thông báo!" }]}
                         >
                             <Select placeholder="Chọn kiểu thông báo" className="w-full">
-                                <Select.Option value="overy-day">Mỗi ngày</Select.Option>
-                                <Select.Option value="overy-hour">Giờ</Select.Option>
-                                <Select.Option value="overy-minute">Phút</Select.Option>
+                                <Select.Option value="every-day">Mỗi ngày</Select.Option>
+                                <Select.Option value="every-hour">Giờ</Select.Option>
+                                <Select.Option value="every-minute">Phút</Select.Option>
                             </Select>
                         </Form.Item>
 
-                        {typeSchedule === "overy-day" && (
+                        {typeSchedule === "every-day" && (
                             <Form.Item
                                 label="Giờ chạy thông báo"
                                 name="time"
@@ -519,7 +519,7 @@ export default function SchedulerPage() {
                             </Form.Item>
                         )}
 
-                        {(typeSchedule === "overy-hour" || typeSchedule === "overy-minute") && (
+                        {(typeSchedule === "every-hour" || typeSchedule === "every-minute") && (
                             <Form.Item
                                 label="Khoảng cách"
                                 name="distance"
