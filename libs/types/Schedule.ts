@@ -4,8 +4,11 @@ export default interface ScheduleData {
   time: string // HH:mm format
   startDate: string // YYYY-MM-DD format
   keywords: string
+  typeSchedule: string
   accountId: string
   chatZaloId: string // Thêm trường này
   status: "active" | "inactive"
   templateZalo: string
+  distance: number,
+  lastRun:string
 }

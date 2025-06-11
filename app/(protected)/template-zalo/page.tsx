@@ -15,6 +15,7 @@ export default function Page() {
         { label: "{{toDay}}", description: "Ngày hôm nay" },
         { label: "{{nameScheduler}}", description: "Tên hẹn giờ" },
         { label: "{{totalSpendLastDay}}", description: "Tổng chi phí ngày hôm qua" },
+        { label: "{{totalSpendToDay}}", description: "Tổng chi phí ngày hôm nay" },
         { label: "{{totalSpend}}", description: "Tổng chi phí" },
         { label: "{{content}}", description: "Nội dung tin nhắn" },
     ];
@@ -238,10 +239,10 @@ export default function Page() {
                 cancelText="Hủy"
                 width={600}
             >
-                <Typography.Text type="secondary">
+                <Typography.Text type="secondary" className="!text-red-300">
                     Hiện tại tin nhắn chỉ có thể gửi dạng <strong>plain text</strong> gồm: văn bản và emoji 😊.
                 </Typography.Text>
-                <Paragraph className="mt-2 mb-1"><strong>Tiện ích nhanh:</strong></Paragraph>
+                <Paragraph className="mt-2 mb-1 text-center"><strong>Tiện ích nhanh:</strong></Paragraph>
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
                     {templateTags.map((tag) => (
                         <Tooltip key={tag.label} title={tag.description}>

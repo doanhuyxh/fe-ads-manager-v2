@@ -29,12 +29,14 @@ import {
     faPause,
     faMessage
 } from "@fortawesome/free-solid-svg-icons"
+import { useWatch } from "antd/es/form/Form";
 import dayjs from "dayjs"
 import ScheduleData from "../../../libs/types/Schedule"
 import { getCompany } from "../../../libs/ApiClient/CompanyApi"
 import { getTemplateZalo } from "../../../libs/ApiClient/TemplateZaloApi"
 import { getSchedule, saveSchedule, deleteSchedule, updateSchedule } from "../../../libs/ApiClient/ScheduleApi"
 import Company from "../../../libs/types/Company"
+import { copyToClipboard } from "../../../libs/web-api"
 
 interface TemplateZaloItem {
     id: string;
@@ -51,6 +53,7 @@ export default function SchedulerPage() {
     const [viewingSchedule, setViewingSchedule] = useState<ScheduleData | null>(null)
     const [templateZalo, setTemplateZalo] = useState<TemplateZaloItem[]>([]);
     const [form] = Form.useForm()
+    const typeSchedule = useWatch("typeSchedule", form);
 
     const showAddModal = () => {
         setEditingSchedule(null)
@@ -68,7 +71,9 @@ export default function SchedulerPage() {
             accountId: schedule.accountId,
             chatZaloId: schedule.chatZaloId,
             status: schedule.status,
-            templateZalo: schedule.templateZalo
+            templateZalo: schedule.templateZalo,
+            typeSchedule: schedule.typeSchedule,
+            distance: schedule.distance
         })
         setIsModalVisible(true)
     }
@@ -81,14 +86,17 @@ export default function SchedulerPage() {
     const handleSubmit = async (values: any) => {
         try {
             const scheduleData = {
-                time: values.time.format("HH:mm"),
+                time: values.time?.format("HH:mm") || "06:00",
                 name: values.name,
                 startDate: values.startDate.format("YYYY-MM-DD"),
                 keywords: values.keywords,
                 accountId: values.accountId,
                 chatZaloId: values.chatZaloId,
                 status: values.status || "active",
-                templateZalo: values.templateZalo
+                templateZalo: values.templateZalo,
+                typeSchedule: values.typeSchedule,
+                distance: values.distance,
+                lastRun: ""
             }
 
             if (editingSchedule) {
@@ -115,6 +123,7 @@ export default function SchedulerPage() {
             form.resetFields()
         } catch (error) {
             message.error("Có lỗi xảy ra!")
+            console.log(error)
         }
     }
 
@@ -158,18 +167,59 @@ export default function SchedulerPage() {
             }
         },
         {
-            title: "Giờ chạy",
-            dataIndex: "time",
-            key: "time",
-            render: (time: string) => (
-                <div className="flex items-center space-x-2">
-                    <FontAwesomeIcon icon={faClock} className="text-blue-500" />
-                    <span className="font-mono font-medium">{time}</span>
-                </div>
-            ),
+            title: "Kiểu thông báo",
+            dataIndex: "typeSchedule",
+            key: "typeSchedule",
+            render: (typeSchedule: string) => {
+                const typeLabelMap: Record<string, string> = {
+                    "overy-day": "Mỗi ngày",
+                    "overy-hour": "Giờ",
+                    "overy-minute": "Phút",
+                };
+
+                return (
+                    <div className="flex items-center space-x-2">
+                        <FontAwesomeIcon icon={faClock} className="text-blue-500" />
+                        <span className="font-mono font-medium">
+                            {typeLabelMap[typeSchedule] || typeSchedule}
+                        </span>
+                    </div>
+                );
+            },
         },
         {
-            title: "Ngày bắt đầu",
+            title: "Thời gian / Khoảng cách",
+            key: "timeDistance",
+            render: (_: any, record: any) => {
+                const { typeSchedule, time, distance } = record;
+
+                if (typeSchedule === "overy-day") {
+                    return (
+                        <div>
+                            <p className="text-nowrap text-sm font-bold text-back-700 truncate" title={time}>
+                                🕒 {time}
+                            </p>
+                        </div>
+                    );
+                }
+
+                const unitMap: Record<string, string> = {
+                    "overy-hour": "giờ",
+                    "overy-minute": "phút",
+                };
+
+                return (
+                    <div>
+                        <p className="text-nowrap text-sm font-bold text-black-700 truncate">
+                            🔁 Mỗi {distance} {unitMap[typeSchedule] || "lần"}
+                        </p>
+                    </div>
+                );
+            },
+        }
+        ,
+        {
+            title: "Ngày bắt đầu tính chi phí",
             dataIndex: "startDate",
             key: "startDate",
             render: (date: string) => (
@@ -215,7 +265,13 @@ export default function SchedulerPage() {
             dataIndex: "chatZaloId",
             key: "chatZaloId",
             render: (chatZaloId: string) => (
-                <span className="font-mono text-sm bg-blue-50 px-2 py-1 rounded text-blue-700">{chatZaloId}</span>
+                <div
+                    onClick={() => copyToClipboard(chatZaloId)}
+                    className="font-mono text-sm bg-blue-50 px-2 py-1 rounded text-blue-700 truncate overflow-hidden whitespace-nowrap max-w-[150px] !cursor-pointer"
+                    title={chatZaloId}
+                >
+                    {chatZaloId}
+                </div>
             ),
         },
         {
@@ -226,6 +282,14 @@ export default function SchedulerPage() {
                 <Tag color={status === "active" ? "green" : "red"} className="font-medium">
                     {status === "active" ? "Đang chạy" : "Tạm dừng"}
                 </Tag>
+            ),
+        },
+        {
+            title: "Lần chạy cuối",
+            dataIndex: "lastRun",
+            key: "lastRun",
+            render: (lastRun: string) => (
+                <span className="text-sm !text-blue-600">{lastRun}</span>
             ),
         },
         {
@@ -295,6 +359,7 @@ export default function SchedulerPage() {
         } else {
             message.error("Lấy danh sách người dùng thất bại")
         }
+        setLoading(false)
     }
 
     const initTemplateZalo = async () => {
@@ -309,10 +374,23 @@ export default function SchedulerPage() {
     }
 
     useEffect(() => {
+        if (typeSchedule === "overy-day") {
+            form.setFieldsValue({
+                time: form.getFieldValue("time") || '06:00',
+                distance: 1, // vẫn cần có nhưng không hiển thị
+            });
+        } else {
+            form.setFieldsValue({
+                distance: form.getFieldValue("distance") || 1,
+                time: "06:00", // bỏ giá trị không cần
+            });
+        }
+    }, [typeSchedule]);
+
+    useEffect(() => {
         initCompany();
-        initSheduler();
         initTemplateZalo()
-        setLoading(false)
+        initSheduler();
     }, [])
 
     return (
@@ -334,7 +412,7 @@ export default function SchedulerPage() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div className="bg-white p-4 rounded-lg shadow-sm">
                     <div className="flex items-center justify-between">
                         <div>
@@ -372,19 +450,6 @@ export default function SchedulerPage() {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm text-gray-600">Hôm nay</p>
-                            <p className="text-2xl font-bold text-orange-600">
-                                {schedules.filter((s) => dayjs(s.startDate).isSame(dayjs(), "day")).length}
-                            </p>
-                        </div>
-                        <div className="bg-orange-100 p-3 rounded-full">
-                            <FontAwesomeIcon icon={faClock} className="text-orange-600" />
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div className="bg-white rounded-lg shadow-sm">
@@ -412,6 +477,7 @@ export default function SchedulerPage() {
                 width={600}
             >
                 <Form form={form} layout="vertical" onFinish={handleSubmit} className="mt-4">
+
                     <Form.Item
                         label="Tên thông báo (hiển thị trong tin nhắn thông báo zalo)"
                         name="name"
@@ -423,19 +489,51 @@ export default function SchedulerPage() {
                         />
                     </Form.Item>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-3 gap-2">
                         <Form.Item
-                            label="Giờ chạy thông báo"
-                            name="time"
-                            rules={[{ required: true, message: "Vui lòng chọn giờ chạy!" }]}
+                            label="Kiểu thông báo"
+                            name="typeSchedule"
+                            rules={[{ required: true, message: "Vui lòng chọn kiểu thông báo!" }]}
                         >
-                            <TimePicker
-                                format="HH:mm"
-                                placeholder="Chọn giờ"
-                                className="w-full"
-                                prefix={<FontAwesomeIcon icon={faClock} />}
-                            />
+                            <Select placeholder="Chọn kiểu thông báo" className="w-full">
+                                <Select.Option value="overy-day">Mỗi ngày</Select.Option>
+                                <Select.Option value="overy-hour">Giờ</Select.Option>
+                                <Select.Option value="overy-minute">Phút</Select.Option>
+                            </Select>
                         </Form.Item>
+
+                        {typeSchedule === "overy-day" && (
+                            <Form.Item
+                                label="Giờ chạy thông báo"
+                                name="time"
+                                initialValue={dayjs('06:00', 'HH:mm')}
+                                rules={[{ required: true, message: "Vui lòng chọn giờ chạy!" }]}
+                            >
+                                <TimePicker
+                                    format="HH:mm"
+                                    placeholder="Chọn giờ"
+                                    className="w-full"
+                                    defaultValue={dayjs('06:00', 'HH:mm')}
+                                    prefix={<FontAwesomeIcon icon={faClock} />}
+                                />
+                            </Form.Item>
+                        )}
+
+                        {(typeSchedule === "overy-hour" || typeSchedule === "overy-minute") && (
+                            <Form.Item
+                                label="Khoảng cách"
+                                name="distance"
+                                rules={[{ required: true, message: "Vui lòng nhập khoảng cách!" }]}
+                            >
+                                <Input
+                                    type="number"
+                                    min={1}
+                                    defaultValue={1}
+                                    placeholder="Nhập khoảng cách"
+                                    className="w-full"
+                                />
+                            </Form.Item>
+                        )}
 
                         <Form.Item
                             label="Ngày bắt đầu"
@@ -500,7 +598,7 @@ export default function SchedulerPage() {
                         </Select>
                     </Form.Item>
 
-                     <Form.Item
+                    <Form.Item
                         label="Chọn mẫu gửi thông báo"
                         name="templateZalo"
                         rules={[{ required: true, message: "Vui lòng chọn mẫu!" }]}
@@ -525,6 +623,7 @@ export default function SchedulerPage() {
                             {editingSchedule ? "Cập nhật" : "Thêm mới"}
                         </Button>
                     </div>
+
                 </Form>
             </Modal>
 
