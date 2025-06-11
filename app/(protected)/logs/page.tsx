@@ -1,11 +1,12 @@
 'use client'
 
 import { useState, useEffect } from "react"
-import { Table, Card, Typography, Empty, Spin, Alert, Tag, Pagination, Input, Button } from "antd"
+import { Table, Card, Typography, Empty, Spin, Tag, Pagination, Input, Button } from "antd"
 import { ReloadOutlined, SearchOutlined, ClockCircleOutlined, InfoCircleOutlined } from "@ant-design/icons"
 import type { ColumnsType } from "antd/es/table"
 import { getLog } from "../../../libs/ApiClient/LogApi"
 import { LogData } from "../../../libs/types/LogRespone"
+import { useMediaQuery } from 'react-responsive'
 
 const { Title, Text } = Typography
 
@@ -18,6 +19,8 @@ export default function Page() {
     const [totalPages, setTotalPages] = useState(1)
     const limit = 10
 
+    const isMobile = useMediaQuery({ maxWidth: 639 })
+
     useEffect(() => {
         fetchLogs()
     }, [currentPage, searchText])
@@ -25,11 +28,7 @@ export default function Page() {
     const fetchLogs = async () => {
         setLoading(true)
         try {
-            const res = await getLog(
-                currentPage,
-                limit,
-                searchText
-            )
+            const res = await getLog(currentPage, limit, searchText)
             if (res.status) {
                 setData(res.data?.logs || [])
                 setTotalLogs(res.data?.total || 0)
@@ -41,7 +40,6 @@ export default function Page() {
             setLoading(false)
         }
     }
-
 
     const getLogLevelColor = (level: string) => {
         switch (level) {
@@ -73,9 +71,11 @@ export default function Page() {
             title: "Level",
             key: "level",
             width: 100,
-            render: (_, record) => {
-                return <Tag color={getLogLevelColor(record.level)} className="uppercase font-medium">{record.level}</Tag>
-            }
+            render: (_, record) => (
+                <Tag color={getLogLevelColor(record.level)} className="uppercase font-medium">
+                    {record.level}
+                </Tag>
+            )
         },
         {
             title: "Message",
@@ -86,18 +86,19 @@ export default function Page() {
     ]
 
     return (
-
-        <div className="px-8 py-4 max-w-7xl m-auto">
-            <div className="mb-6 flex flex-col items-center">
-                <Title level={2} className="flex items-center gap-3">
+        <div className="px-4 sm:px-8 py-4 max-w-7xl m-auto">
+            {/* Header */}
+            <div className="mb-6 text-center">
+                <Title level={2} className="flex items-center justify-center gap-3">
                     <InfoCircleOutlined />
                     System Logs
                 </Title>
                 <Text type="secondary">Monitor and analyze system activities and events</Text>
             </div>
 
-            <Card className="!mb-4 !p-2">
-                <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+            {/* Controls */}
+            <Card className="!mb-4 !p-4">
+                <div className="flex flex-col sm:flex-row gap-4 sm:justify-between items-stretch sm:items-center">
                     <Input
                         placeholder="Search logs..."
                         prefix={<SearchOutlined />}
@@ -107,54 +108,86 @@ export default function Page() {
                             setSearchText(e.target.value)
                         }}
                         allowClear
-                        className="max-w-xs"
+                        className="w-full sm:max-w-xs"
                     />
-                    <Button icon={<ReloadOutlined />} onClick={fetchLogs} loading={loading} type="primary">
+                    <Button icon={<ReloadOutlined />} onClick={fetchLogs} loading={loading} type="primary" className="w-full sm:w-auto">
                         Refresh
                     </Button>
                 </div>
             </Card>
 
-            <Card className="!pb-2">
+            {/* Logs */}
+            <Card className="!p-3">
                 <Spin spinning={loading}>
                     {data.length === 0 ? (
                         <Empty description="No logs found" className="py-12" />
                     ) : (
                         <>
-                            <Table
-                                columns={columns}
-                                dataSource={data}
-                                pagination={false}
-                                scroll={{ x: 800 }}
-                                rowKey={(record) => record._id}
-                                rowClassName={(record) => {
-                                    const level = record.message
-                                    return level === "error"
-                                        ? "bg-red-50"
-                                        : level === "warning"
-                                            ? "bg-orange-50"
-                                            : level === "success"
-                                                ? "bg-green-50"
-                                                : ""
-                                }}
-                            />
+                            {isMobile ? (
+                                <div className="flex flex-col gap-3">
+                                    {data.map((log) => (
+                                        <Card
+                                            key={log._id}
+                                            size="small"
+                                            className={`!p-1 ${log.level === "error"
+                                                ? "border-red-500 bg-red-50"
+                                                : log.level === "warning"
+                                                    ? "border-orange-500 bg-orange-50"
+                                                    : log.level === "success"
+                                                        ? "border-green-500 bg-green-50"
+                                                        : "border-blue-500 bg-blue-50"
+                                                }`}
+                                        >
+                                            <div className="text-xs text-gray-600 mb-1 flex items-center gap-1">
+                                                <ClockCircleOutlined />
+                                                {log.time}
+                                                <Tag color={getLogLevelColor(log.level)}>{log.level}</Tag>
+                                            </div>
+                                            <div className="font-semibold text-sm mb-1">{log.message}</div>
+                                        </Card>
+                                    ))}
+                                </div>
+                            ) : (
+                                <Table
+                                    columns={columns}
+                                    dataSource={data}
+                                    pagination={false}
+                                    rowKey={(record) => record._id}
+                                    scroll={{ x: '100%' }}
+                                    rowClassName={(record) => {
+                                        const level = record.level
+                                        return level === "error"
+                                            ? "bg-red-50"
+                                            : level === "warning"
+                                                ? "bg-orange-50"
+                                                : level === "success"
+                                                    ? "bg-green-50"
+                                                    : ""
+                                    }}
+                                />
+                            )}
+
+
                             {totalPages > 1 && (
-                                <div className="flex justify-center mt-6">
+                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-6">
                                     <Pagination
                                         current={currentPage}
                                         total={totalLogs}
                                         pageSize={limit}
                                         showSizeChanger={false}
                                         onChange={(page) => setCurrentPage(page)}
-                                        showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} logs`}
+                                        className="flex-1"
                                     />
+                                    <div className="text-center sm:text-right text-sm text-gray-600">
+                                        {`${(currentPage - 1) * limit + 1}-${Math.min(currentPage * limit, totalLogs)} of ${totalLogs} logs`}
+                                    </div>
                                 </div>
+
                             )}
                         </>
                     )}
                 </Spin>
             </Card>
         </div>
-
     )
 }
