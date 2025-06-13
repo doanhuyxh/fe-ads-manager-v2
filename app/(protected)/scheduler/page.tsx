@@ -376,13 +376,13 @@ export default function SchedulerPage() {
     useEffect(() => {
         if (typeSchedule === "every-day") {
             form.setFieldsValue({
-                time: form.getFieldValue("time") || '06:00',
-                distance: 1, // vẫn cần có nhưng không hiển thị
+                time: form.getFieldValue("time") || dayjs('06:00', 'HH:mm'),
+                distance: 1,
             });
         } else {
             form.setFieldsValue({
                 distance: form.getFieldValue("distance") || 1,
-                time: "06:00", // bỏ giá trị không cần
+                time: dayjs('06:00', 'HH:mm'), // xoá hoặc reset giá trị time nếu không cần
             });
         }
     }, [typeSchedule]);
@@ -506,14 +506,12 @@ export default function SchedulerPage() {
                             <Form.Item
                                 label="Giờ chạy thông báo"
                                 name="time"
-                                initialValue={dayjs('06:00', 'HH:mm')}
                                 rules={[{ required: true, message: "Vui lòng chọn giờ chạy!" }]}
                             >
                                 <TimePicker
                                     format="HH:mm"
                                     placeholder="Chọn giờ"
                                     className="w-full"
-                                    defaultValue={dayjs('06:00', 'HH:mm')}
                                     prefix={<FontAwesomeIcon icon={faClock} />}
                                 />
                             </Form.Item>
@@ -523,12 +521,12 @@ export default function SchedulerPage() {
                             <Form.Item
                                 label="Khoảng cách"
                                 name="distance"
+                                initialValue={1}
                                 rules={[{ required: true, message: "Vui lòng nhập khoảng cách!" }]}
                             >
                                 <Input
                                     type="number"
                                     min={1}
-                                    defaultValue={1}
                                     placeholder="Nhập khoảng cách"
                                     className="w-full"
                                 />
@@ -587,8 +585,8 @@ export default function SchedulerPage() {
                         <Input placeholder="Nhập Chat Zalo ID" prefix={<span className="text-blue-500 font-bold">Z</span>} />
                     </Form.Item>
 
-                    <Form.Item label="Trạng thái" name="status">
-                        <Select defaultValue="active">
+                    <Form.Item initialValue={"active"} label="Trạng thái" name="status">
+                        <Select>
                             <Select.Option value="active">
                                 <Tag color="green">Đang chạy</Tag>
                             </Select.Option>
