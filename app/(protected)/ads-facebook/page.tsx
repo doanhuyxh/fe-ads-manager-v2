@@ -916,7 +916,8 @@ export default function Page() {
     }, [dates]);
 
     useEffect(() => {
-        setIsMobile(window.innerWidth < 900);
+        //setIsMobile(window.innerWidth < 900);
+        setIsMobile(false)
     }, []);
 
     useEffect(() => {
