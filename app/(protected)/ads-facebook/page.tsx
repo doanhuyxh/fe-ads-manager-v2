@@ -90,7 +90,7 @@ export default function Page() {
         },
         //{ title: 'ID tài khoản', dataIndex: 'account_id', key: 'account_id' },
         {
-            title: 'Chiến dịch', dataIndex: 'name', key: 'name', fixed: 'left', sorter: true, onCell: (record) => ({
+            title: 'Chiến dịch', dataIndex: 'name', key: 'name',  sorter: true, onCell: (record) => ({ //fixed: 'left',
                 onClick: () => {
                     localStorage.setItem("campaign_name", record.name)
                     router.push(`/ads-facebook/content?campaign_id=${record.campaign_id}`)
